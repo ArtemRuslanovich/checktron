@@ -1,23 +1,25 @@
 import logging
-from sqlalchemy import create_engine
-from app.db import Base
-from app.config import settings
+from sqlalchemy import inspect
+from app.db import engine, Base
+from app.models import AddressRequest
 
 def init_db():
     try:
-        engine = create_engine(settings.db_url)        
-        Base.metadata.create_all(bind=engine)
+        logging.info("Создание таблиц...")
         
-        return True
+        Base.metadata.create_all(bind=engine, tables=[AddressRequest.__table__])
+        
+        inspector = inspect(engine)
+        if "address_requests" in inspector.get_table_names():
+            logging.info("Таблица успешно создана")
+            return True
+        logging.error("Таблица не создана")
+        return False
     except Exception as e:
-        logging.error(f"Ошибка инициализации БД: {str(e)}")
+        logging.error(f"Ошибка: {str(e)}")
         return False
 
 if __name__ == "__main__":
-    import sys
     logging.basicConfig(level=logging.INFO)
-    
-    if init_db():
-        sys.exit(0)
-    else:
-        sys.exit(1)
+    import sys
+    sys.exit(0 if init_db() else 1)

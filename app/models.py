@@ -3,7 +3,7 @@ from sqlalchemy.sql import func
 from app.db import Base
 
 class AddressRequest(Base):
-    __tablename__ = "address_requests"
+    __tablename__ = 'address_requests'
 
     id = Column(Integer, primary_key=True, index=True)
     address = Column(String(50), index=True)
