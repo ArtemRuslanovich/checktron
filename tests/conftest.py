@@ -4,10 +4,17 @@ from sqlalchemy.orm import sessionmaker
 from app.db import Base, get_db
 from app.main import app
 from fastapi.testclient import TestClient
+from app.models import AddressRequest
+
+@pytest.fixture(autouse=True)
+def clean_db(db_session):
+    yield
+    db_session.query(AddressRequest).delete()
+    db_session.commit()
 
 @pytest.fixture(scope="session")
 def test_db():
-    engine = create_engine("postgresql://user:pass@localhost:5432/tron_test_db")
+    engine = create_engine(f"postgresql://artemruslanovic@localhost:5432/tron_test_db")
     Base.metadata.create_all(engine)
     yield engine
     Base.metadata.drop_all(engine)

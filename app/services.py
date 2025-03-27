@@ -26,23 +26,28 @@ class TronService:
 class DatabaseService:
     @staticmethod
     def log_request(db, address: str, info: dict = None):
-        request_data = {
-            "address": address,
-            "bandwidth_used": info.get("bandwidth_used") if info else None,
-            "bandwidth_available": info.get("bandwidth_available") if info else None,
-            "energy_used": info.get("energy_used") if info else None,
-            "energy_available": info.get("energy_available") if info else None,
-            "trx_balance": info.get("trx_balance") if info else None
-        }
-        db_request = AddressRequest(**request_data)
-        db.add(db_request)
+        request = AddressRequest(
+            address=address,
+            bandwidth_used=info.get("bandwidth_used", 0) if info else 0,
+            bandwidth_available=info.get("bandwidth_available", 0) if info else 0,
+            energy_used=info.get("energy_used", 0) if info else 0,
+            energy_available=info.get("energy_available", 0) if info else 0,
+            trx_balance=info.get("trx_balance", 0) if info else 0
+        )
+        db.add(request)
         db.commit()
-        return db_request
+        return request
 
     @staticmethod
-    def get_requests(db: Session, skip: int = 0, limit: int = 10):
+    def get_requests(db, skip: int = 0, limit: int = 10):
         total = db.query(AddressRequest).count()
         requests = db.query(AddressRequest).order_by(
             AddressRequest.timestamp.desc()
         ).offset(skip).limit(limit).all()
-        return {"items": requests, "total": total}
+        
+        return {
+            "items": requests,
+            "total": total,
+            "page": skip // limit + 1,
+            "per_page": limit
+        }

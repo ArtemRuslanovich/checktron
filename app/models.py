@@ -9,13 +9,13 @@ class AddressRequest(Base):
     address = Column(String(50), nullable=False, unique=False)
     timestamp = Column(DateTime(timezone=True), server_default=func.now())
 
-    bandwidth_used = Column(BigInteger, nullable=True) #использовано bandwidth
-    bandwidth_available = Column(BigInteger, nullable=True) #осталось bandwidth
+    bandwidth_used = Column(BigInteger, nullable=False, default=0) #использовано bandwidth
+    bandwidth_available = Column(BigInteger, nullable=False, default=0) #осталось bandwidth
 
-    en_used = Column(BigInteger, nullable=True) #использовано en
-    en_availible = Column(BigInteger, nullable=True) #осталось en
+    en_used = Column(BigInteger, nullable=False, default=0) #использовано en
+    en_availible = Column(BigInteger, nullable=False, default=0) #осталось en
 
-    trx_balance = Column(BigInteger, nullable=True) #баланс
+    trx_balance = Column(BigInteger, nullable=False, default=0) #баланс
 
     def __init__(self, **kwargs):
         self.address = kwargs.get('address')

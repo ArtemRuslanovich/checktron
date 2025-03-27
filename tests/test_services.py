@@ -30,16 +30,14 @@ def test_log_request(db_session):
     assert record.trx_balance == 1000
 
 def test_get_requests(db_session):
-    service = DatabaseService()
-    
-    for i in range(3):
-        db_session.add(AddressRequest(
-            address=f"ADDR_{i}",
-            trx_balance=i*100
-        ))
+    db_session.add(AddressRequest(address="TEST1", trx_balance=100))
+    db_session.add(AddressRequest(address="TEST2", trx_balance=200))
     db_session.commit()
     
-    result = service.get_requests(db_session, skip=1, limit=1)
+    service = DatabaseService()
+    result = service.get_requests(db_session, skip=0, limit=1)
     
     assert len(result["items"]) == 1
-    assert result["total"] == 3
+    assert result["total"] == 2
+    assert result["page"] == 1
+    assert result["per_page"] == 1
