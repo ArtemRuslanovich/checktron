@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 class TronService:
     def __init__(self):
         self.client = Tron(HTTPProvider(
-            "https://api.trongrid.io" if settings.tron_network == "mainnet" 
+            "https://api.trongrid.io" if settings.tron_net == "mainnet" 
             else "https://api.shasta.trongrid.io"
         ))
 

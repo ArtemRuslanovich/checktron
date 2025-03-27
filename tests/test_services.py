@@ -1,5 +1,16 @@
 from app.services import DatabaseService
 from app.models import AddressRequest
+from sqlalchemy import inspect
+
+def test_db_initialization(test_db):    
+    inspector = inspect(test_db)
+    assert "address_requests" in inspector.get_table_names()
+    
+    columns = [c["name"] for c in inspector.get_columns("address_requests")]
+    assert all(col in columns for col in [
+        "id", "address", "timestamp", 
+        "trx_balance", "bandwidth_used"
+    ])
 
 def test_log_request(db_session):
     service = DatabaseService()

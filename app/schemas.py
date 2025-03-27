@@ -1,6 +1,5 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
 
 class AddressInfoRequest(BaseModel):
     address: str
@@ -17,13 +16,16 @@ class AddressRequestRecord(BaseModel):
     id: int
     address: str
     timestamp: datetime
-    bandwidth_used: Optional[int] = None
-    bandwidth_available: Optional[int] = None
-    energy_used: Optional[int] = None
-    energy_available: Optional[int] = None
-    trx_balance: Optional[int] = None
+    bandwidth_used: int | None
+    bandwidth_available: int | None
+    energy_used: int | None
+    energy_available: int | None
+    trx_balance: int | None
 
-class PaginatedAddressRequests(BaseModel):
+    class Config:
+        from_attributes = True
+
+class PaginatedResponse(BaseModel):
     items: list[AddressRequestRecord]
     total: int
     page: int
