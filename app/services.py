@@ -25,11 +25,16 @@ class TronService:
 
 class DatabaseService:
     @staticmethod
-    def log_request(db: Session, address: str, info: dict = None):
-        db_request = AddressRequest(
-            address=address,
-            **info if info else {}
-        )
+    def log_request(db, address: str, info: dict = None):
+        request_data = {
+            "address": address,
+            "bandwidth_used": info.get("bandwidth_used") if info else None,
+            "bandwidth_available": info.get("bandwidth_available") if info else None,
+            "energy_used": info.get("energy_used") if info else None,
+            "energy_available": info.get("energy_available") if info else None,
+            "trx_balance": info.get("trx_balance") if info else None
+        }
+        db_request = AddressRequest(**request_data)
         db.add(db_request)
         db.commit()
         return db_request
