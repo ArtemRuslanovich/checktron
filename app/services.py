@@ -41,7 +41,16 @@ class DatabaseService:
     @staticmethod
     def get_requests(db, skip: int = 0, limit: int = 10):
         total = db.query(AddressRequest).count()
-        requests = db.query(AddressRequest).order_by(
+        requests = db.query(
+            AddressRequest.id,
+            AddressRequest.address,
+            AddressRequest.timestamp,
+            AddressRequest.bandwidth_used,
+            AddressRequest.bandwidth_available,
+            AddressRequest.energy_used,
+            AddressRequest.energy_available,
+            AddressRequest.trx_balance
+        ).order_by(
             AddressRequest.timestamp.desc()
         ).offset(skip).limit(limit).all()
         

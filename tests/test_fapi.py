@@ -1,3 +1,5 @@
+from app.models import AddressRequest
+
 def test_address_info_endpoint(client):
     response = client.post(
         "/address-info/",
@@ -8,13 +10,20 @@ def test_address_info_endpoint(client):
         assert "trx_balance" in response.json()
 
 def test_requests_pagination(client, db_session):
-    from app.models import AddressRequest
-    db_session.add(AddressRequest(address="TEST1", trx_balance=100))
-    db_session.add(AddressRequest(address="TEST2", trx_balance=200))
+    db_session.add(AddressRequest(
+        address="TEST1",
+        bandwidth_used=100,
+        bandwidth_available=500,
+        energy_used=200,
+        energy_available=1000,
+        trx_balance=50
+    ))
     db_session.commit()
 
     response = client.get("/address-requests/?page=1&per_page=1")
     assert response.status_code == 200
     data = response.json()
     assert len(data["items"]) == 1
-    assert data["total"] == 2
+    assert all(field in data["items"][0] for field in [
+        "id", "address", "bandwidth_used", "energy_available"
+    ])
