@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from app import schemas, services
 from app.db import get_db
@@ -22,19 +22,8 @@ async def get_address_info(
 
 @app.get("/address-requests/", response_model=schemas.PaginatedResponse)
 async def get_requests(
-    page: int = 1,
-    per_page: int = 10,
+    page: int = Query(1, gt=0),
+    per_page: int = Query(5, le=5),
     db: Session = Depends(get_db)
 ):
-    if page < 1 or per_page < 1:
-        raise HTTPException(
-            status_code=400,
-            detail="Не может быть меньше 0"
-        )
-    result = db_service.get_requests(db, skip=(page-1)*per_page, limit=per_page)
-    return {
-        "items": result["items"],
-        "total": result["total"],
-        "page": page,
-        "per_page": per_page
-    }
+    return db_service.get_requests(db, page=page, per_page=per_page)

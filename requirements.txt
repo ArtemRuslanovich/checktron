@@ -24,6 +24,7 @@ MarkupSafe==3.0.2
 packaging==24.2
 parsimonious==0.10.0
 pluggy==1.5.0
+psycopg2==2.9.10
 pycryptodome==3.22.0
 pydantic==2.10.6
 pydantic_core==2.27.2

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 
 class AddressInfoRequest(BaseModel):
@@ -16,18 +16,16 @@ class AddressRequestRecord(BaseModel):
     id: int
     address: str
     timestamp: datetime
-    bandwidth_used: int = Field(default=0)
-    bandwidth_available: int = Field(default=0)
-    energy_used: int = Field(default=0)
-    energy_available: int = Field(default=0)
-    trx_balance: int = Field(default=0)
-
-    class Config:
-        from_attributes = True
-        extra = "ignore"
+    bandwidth_used: int = 0
+    bandwidth_available: int = 0
+    energy_used: int = 0
+    energy_available: int = 0
+    trx_balance: int = 0
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class PaginatedResponse(BaseModel):
     items: list[AddressRequestRecord]
-    total: int
-    page: int
-    per_page: int
+    total: int = Field(...)
+    page: int = Field(1)
+    per_page: int = Field(5)

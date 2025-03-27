@@ -19,18 +19,40 @@ def test_db():
     yield engine
     Base.metadata.drop_all(engine)
 
-@pytest.fixture
+@pytest.fixture(scope="function")
 def db_session(test_db):
     connection = test_db.connect()
     transaction = connection.begin()
     Session = sessionmaker(bind=connection)
     session = Session()
     
+    session.autocommit = False
+    
     yield session
     
-    session.close()
     transaction.rollback()
+    session.close()
     connection.close()
+
+@pytest.fixture
+def test_data(db_session):
+    data = {
+        "address": "TEST_1",
+        "bandwidth_used": 100,
+        "bandwidth_available": 500,
+        "energy_used": 200,
+        "energy_available": 1000,
+        "trx_balance": 50
+    }
+    db_session.add(AddressRequest(**data))
+    db_session.commit()
+    return data
+
+@pytest.fixture(autouse=True)
+def clean_test_data(db_session):
+    yield
+    db_session.query(AddressRequest).delete()
+    db_session.commit()
 
 @pytest.fixture
 def client(test_db):

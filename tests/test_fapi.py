@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from app.models import AddressRequest
 
 def test_address_info_endpoint(client):
@@ -9,7 +10,7 @@ def test_address_info_endpoint(client):
     if response.status_code == 200:
         assert "trx_balance" in response.json()
 
-def test_requests_pagination(client, db_session):
+def test_get_requests_pagination(client, db_session):
     db_session.add(AddressRequest(
         address="TEST1",
         bandwidth_used=100,

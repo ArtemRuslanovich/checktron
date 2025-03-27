@@ -39,24 +39,20 @@ class DatabaseService:
         return request
 
     @staticmethod
-    def get_requests(db, skip: int = 0, limit: int = 10):
+    def get_requests(db, page: int, per_page: int):
+        per_page = min(max(per_page, 1), 5)
+        page = max(page, 1)
+        
         total = db.query(AddressRequest).count()
-        requests = db.query(
-            AddressRequest.id,
-            AddressRequest.address,
-            AddressRequest.timestamp,
-            AddressRequest.bandwidth_used,
-            AddressRequest.bandwidth_available,
-            AddressRequest.energy_used,
-            AddressRequest.energy_available,
-            AddressRequest.trx_balance
-        ).order_by(
+        offset = (page - 1) * per_page
+        
+        requests = db.query(AddressRequest).order_by(
             AddressRequest.timestamp.desc()
-        ).offset(skip).limit(limit).all()
+        ).offset(offset).limit(per_page).all()
         
         return {
             "items": requests,
             "total": total,
-            "page": skip // limit + 1,
-            "per_page": limit
+            "page": page,
+            "per_page": per_page
         }
