@@ -14,13 +14,6 @@
 - Python 3.10+
 - TronGrid API ключ (для production)
 
-
-# Клонирование репозитория
-```bash
-git clone https://github.com/your-username/tron-wallet-service.git
-cd tron-wallet-service
-```
-
 # Создание виртуального окружения
 ```bash
 python -m venv venv
